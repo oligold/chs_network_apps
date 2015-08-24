@@ -13,7 +13,7 @@ import sys
 choices = ['NEXTCLOSEST2XCHANGE']
 g = graph.Graph()
 g.generate_complete_graph(200)
-g.save_graph('complete_200.txt')
+g.save_graph('graphs/complete_200.txt')
 # g = graph.Graph()
 # g.read_graph('complete_200.txt')
 for choice in choices:
@@ -36,7 +36,9 @@ for choice in choices:
         e = g.find_edge(tour[ix],tour[(ix+1) % len(tour)])
         if not e:
             continue
-    #     e.color = 'blue'
+        e.color = 'blue'
         tsp_length += e.length
     msg = choice+' TSP tour length is %.2f' % tsp_length
-    granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')
+    g.draw(msg)
+    g.print_graph('results/complete_200.png')
+    # granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')

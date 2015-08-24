@@ -6,6 +6,8 @@ Created on Aug 16, 2015
 import node,edge
 import random,math
 import sys
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
 
@@ -325,6 +327,12 @@ class Graph:
     '''
     def show(self):
         plt.show()
+
+    '''
+    Print image
+    '''
+    def print_graph(self,fname,dpi = 50):
+        plt.savefig(fname,dpi=dpi)
     
 
         

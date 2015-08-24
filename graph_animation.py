@@ -4,6 +4,8 @@ Created on Aug 18, 2015
 @author: olivier
 Graph animation functions
 '''
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
