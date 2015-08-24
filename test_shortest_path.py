@@ -12,9 +12,9 @@ import sys
 choices = ['RANDOMST','EXTREMEST']
 choiceIdx = 1
 g = graph.Graph()
-g.read_graph('planar_30.txt')
+g.read_graph('graphs/planar_30.txt')
 # g.generate_planar_graph(30,0.7)
-# g.save_graph('planar_30.txt')
+# g.save_graph('graphs/planar_30.txt')
 g.remove_isolated_vertices()
 if choiceIdx == 0:
     src = snk = None

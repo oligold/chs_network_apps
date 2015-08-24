@@ -4,8 +4,8 @@ Created on Aug 18, 2015
 @author: olivier
 Graph animation functions
 '''
-import matplotlib
-matplotlib.use("Agg")
+# import matplotlib
+# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -53,12 +53,18 @@ Animate algorithms: input is a list of set of edges at each step draw the
 edges from next set of edges
 '''
 def create_movie(g,edge_lsts,animate_function,msg,color='red',time_sleep=300,txtflag=False):
+    # Set up formatting for the movie files
+    Writer = animation.writers['ffmpeg']
+    writer = Writer(fps=3, metadata=dict(artist='oligold'), bitrate=1800)
+
     fig = plt.figure()
     anim = animation.FuncAnimation(fig, animate_function, frames=len(edge_lsts), 
                                    init_func=g.draw(None,None,txtflag), 
-                                   fargs=(g,edge_lsts,color), 
+                                   fargs=(g,edge_lsts,color),
                                    save_count=None, interval=time_sleep,repeat = False)
+#     writer.grab_frame()
+    anim.save('results/graph_film.mp4',writer = writer)
     if msg:
         plt.text(0,0,msg,color='black', fontsize=12)
-    anim.save('graph_movie.mp4')
-#     return anim
+    # plt.show()
+    return anim

@@ -15,7 +15,7 @@ g = graph.Graph()
 g.generate_complete_graph(200)
 g.save_graph('graphs/complete_200.txt')
 # g = graph.Graph()
-# g.read_graph('complete_200.txt')
+# g.read_graph('graphs/complete_200.txt')
 for choice in choices:
     if choice == 'CONVEXHULL' or choice == 'CONVEXHULL2XCHANGE':
         tour,tsp_anim = transport_algorithms.tsp_convex_hull(g)
@@ -36,9 +36,13 @@ for choice in choices:
         e = g.find_edge(tour[ix],tour[(ix+1) % len(tour)])
         if not e:
             continue
-        e.color = 'blue'
         tsp_length += e.length
     msg = choice+' TSP tour length is %.2f' % tsp_length
+#     granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')
+    for ix in range(len(tour)):
+        e = g.find_edge(tour[ix],tour[(ix+1) % len(tour)])
+        if not e:
+            continue
+        e.color = 'blue'
     g.draw(msg)
     g.print_graph('results/complete_200.png')
-    # granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')

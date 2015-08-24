@@ -6,8 +6,8 @@ Created on Aug 16, 2015
 import node,edge
 import random,math
 import sys
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
 
