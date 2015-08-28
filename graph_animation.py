@@ -63,8 +63,8 @@ def create_movie(g,edge_lsts,animate_function,msg,color='red',time_sleep=300,txt
                                    fargs=(g,edge_lsts,color),
                                    save_count=None, interval=time_sleep,repeat = False)
 #     writer.grab_frame()
-    anim.save('results/graph_film.mp4',writer = writer)
     if msg:
         plt.text(0,0,msg,color='black', fontsize=12)
+    anim.save('results/graph_film.mp4',writer = writer)
     # plt.show()
     return anim

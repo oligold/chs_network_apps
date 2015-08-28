@@ -20,6 +20,7 @@ class Edge:
         self.color = 'lightgray'
         self.width = 1
         self.length = 0
+        self.qual = -1 
     
     ''' Return the vertex that is the other endpoint of the edge '''
     def get_other_vertex(self,nd):
