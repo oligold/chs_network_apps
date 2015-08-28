@@ -12,9 +12,9 @@ import sys
 choices = ['RANDOMST','EXTREMEST']
 choiceIdx = 1
 g = graph.Graph()
-g.read_graph('graphs/planar_30.txt')
-# g.generate_planar_graph(30,0.7)
-# g.save_graph('graphs/planar_30.txt')
+# g.read_graph('graphs/planar_30.txt')
+g.generate_planar_graph(30,0.7)
+g.save_graph('graphs/planar_30.txt')
 g.remove_isolated_vertices()
 if choiceIdx == 0:
     src = snk = None
@@ -32,6 +32,10 @@ if not shortest_path:
 path_length = 0
 for (e,ln) in shortest_path:
     path_length += ln
+    e.color = 'blue'
+    e.width = 1
 animation_lst.append(shortest_path)
 msg = 'Path has length %.2f' % path_length
-granim.animate(g,animation_lst,granim.animate_func,msg,'red')
+# granim.animate(g,animation_lst,granim.animate_func,msg,'red')
+g.draw(msg)
+g.print_graph('results/planar_30.png')

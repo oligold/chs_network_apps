@@ -48,7 +48,7 @@ def random_walk(g,steps):
     ordernd_lst.sort(reverse = True)
     idx = 0
     for (wt,key) in ordernd_lst:
-        print '%d %d' % (key,wt)
+        # print '%d %d' % (key,wt)
         idx += 1
         g.nodes[key].idx = idx
     return walk_anim
