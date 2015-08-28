@@ -12,8 +12,8 @@ import sys
 # choices = ['CONVEXHULL','CONVEXHULL2XCHANGE','NEXTCLOSEST','NEXTCLOSEST2XCHANGE']
 choices = ['NEXTCLOSEST2XCHANGE']
 g = graph.Graph()
-g.generate_complete_graph(200)
-g.save_graph('graphs/complete_200.txt')
+g.generate_complete_graph(100)
+g.save_graph('graphs/complete_100.txt')
 # g = graph.Graph()
 # g.read_graph('graphs/complete_200.txt')
 for choice in choices:
@@ -38,11 +38,11 @@ for choice in choices:
             continue
         tsp_length += e.length
     msg = choice+' TSP tour length is %.2f' % tsp_length
-    granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')
-#     for ix in range(len(tour)):
-#         e = g.find_edge(tour[ix],tour[(ix+1) % len(tour)])
-#         if not e:
-#             continue
-#         e.color = 'blue'
-#     g.draw(msg)
-#     g.print_graph('results/complete_200.png')
+    # granim.create_movie(g,tsp_anim,granim.animate_func_erase,msg,'blue')
+    for ix in range(len(tour)):
+        e = g.find_edge(tour[ix],tour[(ix+1) % len(tour)])
+        if not e:
+            continue
+        e.color = 'blue'
+    g.draw(msg)
+    g.print_graph('results/complete_100.png')
