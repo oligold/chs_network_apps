@@ -1,7 +1,7 @@
 '''
 Created on Aug 16, 2015
 
-@author: olivier
+@author: Mr Goldschmidt
 '''
 import node,edge
 import random,math
@@ -317,8 +317,9 @@ class Graph:
     '''
     Draw graph
     '''
-    def draw(self,msg = None, globalColor = None,txt = False):
-        self.plot_edges(globalColor)
+    def draw(self, msg = None, globalColor = None,txt = False, drawEdges = True):
+        if drawEdges:
+            self.plot_edges(globalColor)
         self.plot_nodes(globalColor,txt)
         if msg:
             plt.text(0,0,msg,color='black', fontsize=12)
@@ -331,7 +332,7 @@ class Graph:
     '''
     Print image
     '''
-    def print_graph(self,fname,dpi = 50):
+    def print_graph(self,fname,dpi = 300):
         plt.savefig(fname,dpi=dpi)
     
 

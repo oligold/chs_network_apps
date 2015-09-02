@@ -24,6 +24,11 @@ def animate_func(ix,g,edge_lsts,color):
             plt.text(x,y,txt,color=color, fontsize=9)
     return
 
+''' Animate function for social graph evolution '''
+def animate_func_evolv(ix,g,edge_lsts,color):
+    g.plot_edge(edge_lsts[ix])
+    return
+
 ''' Animate function with erasing '''
 def animate_func_erase(ix,g,edge_lsts,color):
     globalWidth = 0.7
@@ -52,19 +57,21 @@ def animate(g,edge_lsts,animate_function,msg,color='red',time_sleep=300,txtflag=
 Animate algorithms: input is a list of set of edges at each step draw the 
 edges from next set of edges
 '''
-def create_movie(g,edge_lsts,animate_function,msg,color='red',time_sleep=300,txtflag=False):
+def create_movie(g,fname,edge_lsts,animate_function,msg,color='red',time_sleep=300,
+                 txtflag=False, drawEdgesFlag = False):
     # Set up formatting for the movie files
     Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=3, metadata=dict(artist='oligold'), bitrate=1800)
+    writer = Writer(fps=1, metadata=dict(artist='oligold'), bitrate=1800)
 
     fig = plt.figure()
     anim = animation.FuncAnimation(fig, animate_function, frames=len(edge_lsts), 
-                                   init_func=g.draw(None,None,txtflag), 
+                                   init_func=g.draw(None,None,txtflag,drawEdgesFlag), 
                                    fargs=(g,edge_lsts,color),
                                    save_count=None, interval=time_sleep,repeat = False)
 #     writer.grab_frame()
     if msg:
         plt.text(0,0,msg,color='black', fontsize=12)
-    anim.save('results/graph_film.mp4',writer = writer)
+    fname = 'results/%s.mp4' % fname
+    anim.save(fname,writer = writer)
     # plt.show()
     return anim

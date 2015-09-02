@@ -38,6 +38,7 @@ import random
 def grow_social_network(gr,stlk = 0.03, wklk = 0.1, pss = 0.3, psw = 0.5, pww = 0.1):
     ''' Create a list with all links which are potential strong or weak links '''
     potentialLkLst = []
+    lst_anim = []
     for e in gr.get_edges():
         if e.length < wklk:
             potentialLkLst.append(e)
@@ -45,6 +46,7 @@ def grow_social_network(gr,stlk = 0.03, wklk = 0.1, pss = 0.3, psw = 0.5, pww = 
         ''' Select a random link in the pool of potential links '''
         ix = int(random.random()*len(potentialLkLst))
         select_e = potentialLkLst.pop(ix)
+        lst_anim.append(select_e)
         ''' Determine if link is strong or weak '''
         if select_e.length <stlk:
             select_e.qual = 1
@@ -55,12 +57,50 @@ def grow_social_network(gr,stlk = 0.03, wklk = 0.1, pss = 0.3, psw = 0.5, pww = 
         ''' Add adjacencies to link node '''
         select_e.orig.neighs.append(select_e)
         select_e.dest.neighs.append(select_e)
-        potentialLkLst = compute_triadic_closures(gr,potentialLkLst,[],pss,psw,pww)
+#         potentialLkLst,lst_anim = compute_triadic_closures(gr,lst_anim,potentialLkLst,[select_e],pss,psw,pww,
+#                                                   stlk)
+    return lst_anim
         
-def compute_triadic_closures(gr,potentialLkLst,addedLkLst,pss,psw,pww):
+def compute_triadic_closures(gr,lst_anim,potentialLkLst,addedLkLst,pss,psw,pww,stlk):
     ''' Compute all the new triadic links triggered by the new link '''
     while len(addedLkLst) > 0:
         ''' Extract next added link '''
         lk = addedLkLst.pop()
-        
+        ''' Look for potential triadic closure with each endpoint of the link '''
+        for nd in [lk.orig,lk.dest]:
+            ond = lk.get_other_vertex(nd)
+            for e in nd.neighs:
+                nnd = e.get_other_vertex(nd)
+                if nnd == ond:
+                    continue
+                if (lk.qual == 1 and e.qual ==1) or \
+                    ((lk.qual == 1 or e.qual == 1) and random.random() < psw) or \
+                    ((lk.qual == 0 and e.qual == 0) and random.random() < pww):
+                    ''' Both are strong links so we create a link '''
+                    nlk = gr.find_edge(nnd,ond)
+                    if not nlk or nlk.qual > -1:
+                        ''' Cannot find the triadic link -- is the graph complete? '''
+                        continue
+                    nnd.neighs.append(nlk)
+                    ond.neighs.append(nlk)
+                    if nlk in potentialLkLst:
+                        potentialLkLst.remove(nlk)
+                    if lk.qual == 1 and e.qual ==1:
+                        if random.random()<pss:
+                            nlk.qual = 1
+                        else:
+                            nlk.qual = 0
+                    else:
+                        if nlk.length < stlk:
+                            nlk.qual = 1
+                        else:
+                            nlk.qual = 0
+                    if nlk.qual == 1:
+                        nlk.color = 'blue'
+                    else:
+                        nlk.color = 'green'
+                    addedLkLst.append(nlk)
+                    lst_anim.append(nlk)
+    return potentialLkLst,lst_anim
+                        
     

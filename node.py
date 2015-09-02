@@ -1,7 +1,7 @@
 '''
 Created on Aug 16, 2015
 
-@author: olivier
+@author: Mr Goldschmidt
 '''
 
 class Node:
