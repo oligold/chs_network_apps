@@ -6,11 +6,13 @@ Test the graph functions
 '''
 import graph,transport_algorithms
 import graph_animation as granim
+import graph_utilities as gutil
 # import graph_utilities as gutil
 import sys
 
 # choices = ['CONVEXHULL','CONVEXHULL2XCHANGE','NEXTCLOSEST','NEXTCLOSEST2XCHANGE']
 choices = ['NEXTCLOSEST2XCHANGE']
+MST_FLAG = False
 g = graph.Graph()
 g.generate_complete_graph(100)
 g.save_graph('graphs/complete_100.txt')
@@ -44,5 +46,16 @@ for choice in choices:
         if not e:
             continue
         e.color = 'blue'
+    if MST_FLAG:
+        mst = gutil.MinimumSpanningTree(g)
+        mst_length = 0
+        for e in mst:
+            if e.color == 'blue':
+                e.color = 'cyan'
+            else:
+                e.color = 'red'
+                e.width = 0.5
+            mst_length += e.length
+        msg += ' MST length is %.2f' % mst_length
     g.draw(msg)
-    g.print_graph('results/complete_100.png')
+    g.print_graph('results/complete_closest_100.png')

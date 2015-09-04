@@ -4,6 +4,8 @@ Created on Aug 19, 2015
 @author: olivier
 Graph Utilities are a set of graph algorithms
 '''
+from numpy import minimum
+
 '''
     LeftRight determines the order of three points
 '''
@@ -93,4 +95,36 @@ def convexHull(g):
     for ix in range(convexSize):
         tmpOrder.append(nodes[convexOrder[ix]])
     return tmpOrder
+    
+def MinimumSpanningTree(g):
+    ''' MinimumSpanningTree returns the set of edges of a minimum
+        spanning tree of the graph '''
+    ''' Create a dictionary with edges in graph: key is the length of the edge '''
+    edges = g.get_edges()
+    e_dic = {}
+    for e in edges:
+        if not e.length in e_dic:
+            e_dic[e.length] = []
+        e_dic[e.length].append(e)
+    keys = e_dic.keys()
+    keys.sort()
+    ''' Reset all node neighs lists '''
+    node_dic = g.get_nodes()
+    node_lst = []
+    for key in node_dic:
+        node_dic[key].next = node_dic[key].idx
+        node_lst.append(node_dic[key])
+    mst = []
+    for key in keys:
+        for e in e_dic[key]:
+            if e.orig.next == e.dest.next:
+                ''' the two nodes are already in same bloc '''
+                continue
+            mst.append(e)
+            deadgrp  = e.dest.next
+            for nd in node_lst:
+                if nd.next == deadgrp:
+                    nd.next = e.orig.next
+    return mst
+        
     

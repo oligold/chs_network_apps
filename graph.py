@@ -78,7 +78,7 @@ class Graph:
         self.nodes = {}
         for ix in range(node_count):
             self.nodes[ix] = node.Node(0.01+0.97*random.random(),0.01+0.97*random.random())
-    
+            self.nodes[ix].idx = ix
     ''' Generate a complete graph on node_count vertices '''
     def generate_complete_graph(self,node_count):
         self.generate_nodes(node_count)
@@ -122,6 +122,21 @@ class Graph:
                     e.length = self.distance(self.nodes[ix2],self.nodes[ix1])
                     self.edges.append(e)
     
+    ''' Generate a geometric graph on node_count vertices:
+        two nodes are connected by an edge if their distance is less than max_dist
+    '''
+    def generate_geometric_graph(self,node_count,max_dist,directed = False):
+        if directed:
+            self.directed = True
+        self.generate_nodes(node_count)
+        self.edges = []
+        for ix1 in range(node_count):
+            for ix2 in range(ix1+1,node_count):
+                if self.distance(self.nodes[ix1],self.nodes[ix2]) < max_dist:
+                    e = edge.Edge(self.nodes[ix1],self.nodes[ix2])
+                    e.length = self.distance(self.nodes[ix1],self.nodes[ix2])
+                    self.edges.append(e)
+    
     ''' Compute adjacencies:
         find neighbors of each vertex '''
     def compute_adjacencies(self,from_node = False):
@@ -146,21 +161,6 @@ class Graph:
         print '%d isolated nodes were removed' % isolated_count
         return
             
-    
-    ''' Generate a geometric graph on node_count vertices:
-        two nodes are connected by an edge if their distance is less than max_dist
-    '''
-    def generate_geometric_graph(self,node_count,max_dist,directed = False):
-        if directed:
-            self.directed = True
-        self.generate_nodes(node_count)
-        self.edges = []
-        for ix1 in range(node_count):
-            for ix2 in range(ix1+1,node_count):
-                if self.distance(self.nodes[ix1],self.nodes[ix2]) < max_dist:
-                    e = edge.Edge(self.nodes[ix1],self.nodes[ix2])
-                    e.length = self.distance(self.nodes[ix1],self.nodes[ix2])
-                    self.edges.append(e)
     
     ''' Compute the distance between two nodes '''
     def distance(self,nd1,nd2):
