@@ -50,7 +50,7 @@ def dijkstra(g,src,snk,euclidean=True):
         continue
     ''' Check that source was reached (source is connected to sink by at least one path'''
     if not src.seen:
-        print 'Could not find a path between source and sink'
+#         print 'Could not find a path between source and sink'
         return None,None
     node = src
     shortest_path = []

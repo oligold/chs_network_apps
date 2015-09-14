@@ -79,6 +79,54 @@ class Graph:
         for ix in range(node_count):
             self.nodes[ix] = node.Node(0.01+0.97*random.random(),0.01+0.97*random.random())
             self.nodes[ix].idx = ix
+
+    ''' Generate a set of nodes forming a grid in the unit square the unit square 
+        Parameter is the number of nodes per row'''
+    def generate_bloc_nodes(self,nb_row):
+        self.nodes = {}
+        dist = 0.98/nb_row
+        start = 0.01
+        for iv in range(nb_row):
+            for ih in range(nb_row):
+                self.nodes[ih+iv*nb_row] = node.Node(start+iv*dist,start+ih*dist)
+                self.nodes[ih+iv*nb_row].idx = ih+iv*nb_row
+    
+    ''' Generate Grid Graph
+        Parameters: nb_row is the number of rows (equal to the number of columns) in the
+                    grid
+                    prob is the probability of an edge between two consecutive horizontal
+                    or vertical nodes
+                    directed indicate if the graph is directed or not
+    '''
+    def generate_grid_graph(self,nb_row,prob,directed = True):
+        self.directed = directed
+        self.generate_bloc_nodes(nb_row)
+        for iv in range(nb_row):
+            for ih in range(nb_row):
+                ''' Check if there is a horizontal edge '''
+                if ih == 0 or ih == nb_row-2:
+                    proba = prob*2
+                else:
+                    proba = prob
+                if random.random() < proba and ih < nb_row-1:
+                    e = edge.Edge(self.nodes[ih+iv*nb_row],self.nodes[(ih+1)+iv*nb_row])
+                    self.edges.append(e)
+                    if directed:
+                        e = edge.Edge(self.nodes[(ih+1)+iv*nb_row],self.nodes[ih+iv*nb_row])
+                        self.edges.append(e)
+                ''' Check if there is a vertical edge '''
+                if iv == 0 or iv == nb_row-2:
+                    proba = prob*2
+                else:
+                    proba = prob
+                if random.random() < proba and iv < nb_row-1:
+                    e = edge.Edge(self.nodes[ih+iv*nb_row],self.nodes[ih+(iv+1)*nb_row])
+                    self.edges.append(e)
+                    if directed:
+                        e = edge.Edge(self.nodes[ih+(iv+1)*nb_row],self.nodes[ih+iv*nb_row])
+                        self.edges.append(e)
+        return
+    
     ''' Generate a complete graph on node_count vertices '''
     def generate_complete_graph(self,node_count):
         self.generate_nodes(node_count)
@@ -139,7 +187,7 @@ class Graph:
     
     ''' Compute adjacencies:
         find neighbors of each vertex '''
-    def compute_adjacencies(self,from_node = False):
+    def compute_adjacencies(self,from_node = True):
         for key in self.nodes.keys():
             self.nodes[key].neighs = []
         for e in self.edges:
@@ -275,6 +323,13 @@ class Graph:
         return
 
     '''
+    Plot one point
+    '''
+    def plot_point(self,x,y,globalColor = 'blue'):
+        plt.plot(x, y, 'ro',color=globalColor)
+        return
+
+    '''
     Plot all nodes
     '''
     def plot_nodes(self,globalColor = None,txt = False):
@@ -318,6 +373,7 @@ class Graph:
     Draw graph
     '''
     def draw(self, msg = None, globalColor = None,txt = False, drawEdges = True):
+        plt.clf()
         if drawEdges:
             self.plot_edges(globalColor)
         self.plot_nodes(globalColor,txt)

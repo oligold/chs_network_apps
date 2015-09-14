@@ -11,16 +11,17 @@ class Edge:
     '''
 
 
-    def __init__(self, orig, dest):
+    def __init__(self, orig, dest, length = 50):
         '''
         Constructor orig and dest are the endpoints of the edge
         '''
         self.orig = orig
         self.dest = dest
         self.color = 'lightgray'
-        self.width = 2
-        self.length = 0
+        self.width = 1
+        self.length = length
         self.qual = -1 
+        self.occ = [None]*self.length
     
     ''' Return the vertex that is the other endpoint of the edge '''
     def get_other_vertex(self,nd):
