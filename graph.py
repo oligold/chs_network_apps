@@ -6,8 +6,8 @@ Created on Aug 16, 2015
 import node,edge
 import random,math
 import sys
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
 
@@ -26,6 +26,7 @@ class Graph:
         ''' dictionary of edges '''
         self.edgedic = None
         self.directed = False
+        self.bidirect = False
     
     ''' return the dictionary of nodes '''
     def get_nodes(self):
@@ -100,6 +101,7 @@ class Graph:
     '''
     def generate_grid_graph(self,nb_row,prob,directed = True):
         self.directed = directed
+        self.bidirect = True
         self.generate_bloc_nodes(nb_row)
         for iv in range(nb_row):
             for ih in range(nb_row):
@@ -352,7 +354,7 @@ class Graph:
             width = e.width
         else:
             width = globalWidth
-        if self.directed:
+        if self.directed and not self.bidirect:
             plt.arrow(orig.x,orig.y,dest.x-orig.x,dest.y-orig.y,color=col, 
                       head_width=0.01, head_length=0.02,
                       length_includes_head = True,linewidth=width)

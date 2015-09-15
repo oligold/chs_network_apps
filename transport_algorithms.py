@@ -12,9 +12,9 @@ import graph_utilities
 
 ''' Dijkstra finds the shortest path in a graph between a source and a sink vertex 
     If euclidean then use Euclidean distances else use number of hops'''
-def dijkstra(g,src,snk,euclidean=True):
+def dijkstra(g,src,snk,euclidean=True,fromNode = True):
     ''' Compute adjacencies in the graph '''
-    g.compute_adjacencies()
+    g.compute_adjacencies(fromNode)
     ''' set all node weights to be infinity '''
     for key in g.nodes.keys():
         g.nodes[key].weight = sys.maxint

@@ -30,7 +30,7 @@ class SimulateTraffic(object):
                 snk = g.get_random_node()
                 if src == snk:
                     flag = True
-            shpath, _animres = transport_algorithms.dijkstra(g, src, snk)
+            shpath, _animres = transport_algorithms.dijkstra(g, src, snk, fromNode = False)
             if shpath == None:
                 continue
             route = []
@@ -42,17 +42,25 @@ class SimulateTraffic(object):
             car = carclass.Car(route,startTime)
             car.idx = startTime
             self.cars.append(car)
+        ''' Reset node weights to zero'''
+        for ix in g.get_nodes():
+            g.nodes[ix].weight = -1
 
     def run_simulation(self):
         simTime = 0
         animate = []
+        arrivedcars_count = 0
+        for car in self.cars:
+            car.reset()
         while True:
 #             if simTime % 10 == 0:
 #                 print 'Simulation time is %d' % simTime
-            if len(self.cars) == 0:
+            if len(self.cars) == arrivedcars_count:
                 break
             simTime += 1
             for car in self.cars:
+                if car.arrivalTime > -1:
+                    continue
                 if car.startTime > simTime:
                     ''' Car hasn't started yet '''
                     continue
@@ -62,19 +70,19 @@ class SimulateTraffic(object):
                         car.startTime += 1
                         continue
                     car.pos = (0,0)
-                    print '\tCar %d has started at time %d' % (car.idx,simTime)
+#                     print '\tCar %d has started at time %d' % (car.idx,simTime)
                     car.route[0].occ[0] = car
                     continue
                 if car.startTime < simTime:
                     ''' Check if the car is stopped and start it if next
                         position is free but don't move it yet '''
                     if car.stopped:
-                        (rd,seg) = car.get_next_pos()
+                        (rd,seg,siggreen) = car.get_next_pos(simTime)
                         if rd == -1:
                             ''' Car has almost reached its destination'''
                             car.stopped = False
                             continue
-                        elif car.route[rd].occ[seg]:
+                        elif car.route[rd].occ[seg] or not siggreen:
                             ''' There is a car in the next segment '''
                             continue
                         else:
@@ -83,17 +91,20 @@ class SimulateTraffic(object):
                             continue
                     else:
                         ''' Car is not stopped '''
-                        (rd,seg) = car.get_next_pos()
+                        (rd,seg,siggreen) = car.get_next_pos(simTime)
                         if rd == -1:
                             ''' Car has arrived at destination '''
                             car.free_current_position()
-                            print '\tCar %d has arrived at time %d' % (car.idx,simTime)
-                            self.cars.remove(car)
+                            car.arrivalTime = simTime
+#                             print '\tCar %d has arrived at time %d' % (car.idx,simTime)
+
+                            arrivedcars_count += 1
+#                             print 'Number of arrived cars is '+str(arrivedcars_count)
                             continue
-                        elif car.route[rd].occ[seg]:
+                        elif car.route[rd].occ[seg] or not siggreen:
                             ''' There is a car in the next segment '''
                             car.stopped = True
-                            print 'Car %d has stopped at time %d' % (car.idx,simTime)
+#                             print 'Car %d has stopped at time %d' % (car.idx,simTime)
                             continue
                         else:
                             ''' Move the car of one unit '''
@@ -102,14 +113,30 @@ class SimulateTraffic(object):
                             car.route[currd].occ[curseg] = None
                             car.pos = (rd,seg)
                             car.route[rd].occ[seg]
-            if not simTime % 3 == 0:
+            if not simTime % 5 == 0:
                 continue
-            car_pos = []
+            car_pos = [simTime]
             for car in self.cars:
                 (x,y) = car.get_coors()
                 if x > -1:
-                    car_pos.append((x,y))
+                    if car.stopped:
+                        car_pos.append((x,y,'red'))
+                    else:
+                        car_pos.append((x,y,'blue'))
             animate.append(car_pos)
+        ''' Now we compute for each car the extra time spent on the road '''
+        perc_lst = []
+        for car in self.cars:
+            minTime = 50*len(car.route)+1
+            actualTime = car.arrivalTime-car.startTime
+            carPerc = 100*float(actualTime-minTime)/minTime
+            perc_lst.append(carPerc)
+#             print 'Car %d took %d actual time and was %.2f percent over minimum time' % \
+#                 (car.idx,actualTime,carPerc)
+        average = sum(perc_lst)/len(self.cars)
+        variance = sum((average - value) ** 2 for value in perc_lst) / len(self.cars)
+        print "Average percentage of travel time over minimum is %.2f" % average
+        print "Variance percentage of travel time over minimum is %.2f" % variance
         return animate
                     
 

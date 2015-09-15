@@ -31,9 +31,10 @@ def animate_func_evolv(ix,g,edge_lsts,color):
 
 ''' Animate function for social graph evolution '''
 def animate_func_car(ix,g,car_pos,color):
-    g.draw()
-    for (x,y) in car_pos[ix]:
-        g.plot_point(x,y)
+    g.draw(msg='Time '+str(car_pos[ix][0]))
+    for idx in range(1,len(car_pos[ix])):
+        (x,y,col) = car_pos[ix][idx]
+        g.plot_point(x,y,col)
     return
 
 ''' Animate function with erasing '''
@@ -64,7 +65,7 @@ def animate(g,edge_lsts,animate_function,msg,color='red',time_sleep=300,txtflag=
 Animate algorithms for cars: input is a list of set of edges at each step draw the 
 edges from next set of edges
 '''
-def animate_car(g,car_pos_lsts,animate_function,msg,color='red',time_sleep=300,txtflag=False):
+def animate_car(g,car_pos_lsts,animate_function,msg,color='red',time_sleep=1000,txtflag=False):
     fig = plt.figure()
     _anim = animation.FuncAnimation(fig, animate_function, frames=len(car_pos_lsts), 
                                    init_func=g.draw(None,None,txtflag), 
@@ -105,7 +106,7 @@ def create_car_movie(g,fname,car_pos_lsts,animate_function,msg=None,color='red',
                  txtflag=False, drawEdgesFlag = False):
     # Set up formatting for the movie files
     Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=1, metadata=dict(artist='oligold'), bitrate=1800)
+    writer = Writer(fps=3, metadata=dict(artist='oligold'), bitrate=1800)
 
     fig = plt.figure()
     anim = animation.FuncAnimation(fig, animate_function, frames=len(car_pos_lsts), 
